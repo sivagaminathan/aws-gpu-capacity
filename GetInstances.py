@@ -116,63 +116,9 @@ async def get_gpu_instances_in_region(region: str):
 
 
 """
-  
+TODO   
 # For Given Region, return all GPU instances offered in that region
-@app.get("/gpu-instances/region/{region}", response_class=PlainTextResponse)
-async def get_gpu_instances_in_region(region: str):
-    flag = False
-    return_records = []
-    ec2 = boto3.client('ec2', region_name=region)
-    region = region.lower()
-    describe_availability_zones = ec2.describe_availability_zones()
-    # Takes parameter Region 
-    describe_instance_type_offerings = ec2.describe_instance_type_offerings(LocationType='availability-zone', Filters=[{'Name': 'instance-type', 'Values': gpu_instances}])
-    for each_record in describe_instance_type_offerings['InstanceTypeOfferings']:
-        #for availability_zone in describe_availability_zones['AvailabilityZones']:
-        if region in each_record['Location']:
-            new_string = each_record['InstanceType'] + " -in- " + region + " -zone- " + each_record['Location']
-            return_records.append(new_string)
-            return_records.append("\n")
-            #return_records.append(availability_zone['ZoneName'])
-            flag = True
-    if flag:
-        # This is the way to return it as a plain text response
-        return "".join(return_records)
-    else:
-        return {"message": "No GPU instance type found in the specified region"}
-
-
-
-
-describe_availability_zones = ec2.describe_availability_zones()
-for availability_zone in describe_availability_zones['AvailabilityZones']:
-    print('-----------------------------')
-    print('RegionName: ', availability_zone['RegionName'])
-    print('ZoneName: ', availability_zone['ZoneName'])
-
-# TODO: Add more filters to the describe_instance_type_offerings API call to get more specific information about the GPU instances
-Sufficient Account permissions required
-
-describe_availability_zones = ec2.describe_availability_zones()
-print('-----------------------------')
-print('Availability Zones: ', describe_availability_zones['AvailabilityZones'])
-
-
+# Add more filters to the describe_instance_type_offerings API call to get more specific information about the GPU instances
 # Describes the capacity block offerings for a specified instance type and count
-describe_capacity_block_offerings = ec2.describe_capacity_block_offerings(InstanceType = 'p5en.48xlarge', InstanceCount = 1, CapacityDurationHours = 24)
-print('-----------------------------')
-print('Capacity Block Offerings: ', describe_capacity_block_offerings['CapacityBlockOfferings'])
-
-
 # Capacity Manager metrics for a specified time range filtered by instance type
-InstanceWeWant = {
-        'Dimension': 'instance-family',
-        'Comparison': 'equals',
-        'Values': ['t2'] 
-    }
-get_capacity_manager_metric_data = ec2.get_capacity_manager_metric_data(MetricNames = ['reservation-unused-total-estimated-cost'], StartTime = '2023-01-01T00:00:00Z', EndTime = '2023-01-03T00:00:00Z', Period = 3600,
-                                                                        FilterBy = InstanceWeWant)
-print('-----------------------------')
-print('Capacity Manager Metric Data: ', get_capacity_manager_metric_data['MetricDataResults'])
-
 """
